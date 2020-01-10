@@ -1,5 +1,5 @@
 package com.janus.orderbook;
 
-public interface IPriceBucket {
-    String fmt();
+public interface IPriceBucket extends IOrderManager {
+    long volume();
 }

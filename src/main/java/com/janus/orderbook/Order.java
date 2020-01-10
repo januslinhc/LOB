@@ -8,17 +8,17 @@ public class Order implements IOrder {
     private String part_id;
 
     @Override
-    public long bestPrice() {
-        return 0;
+    public long getPrice() {
+        return this.price;
     }
 
     @Override
-    public void addOrder(IOrder order) {
-
+    public short getSide() {
+        return this.side;
     }
 
     @Override
-    public void removeOrder(IOrder order) {
-
+    public long getVolume() {
+        return this.volume;
     }
 }
