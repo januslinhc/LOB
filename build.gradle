@@ -12,7 +12,7 @@ repositories {
 }
 
 ext {
-    javaMainClass = "com.janus.orderbook.Main"
+    javaMainClass = "com.janus.orderbook.Launch"
     javaSampleDataClass = "com.janus.orderbook.api.ClientTest"
 }
 
