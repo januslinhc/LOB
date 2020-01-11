@@ -13,6 +13,7 @@ repositories {
 
 ext {
     javaMainClass = "com.janus.orderbook.Main"
+    javaSampleDataClass = "com.janus.orderbook.api.ClientTest"
 }
 
 test {
@@ -24,6 +25,13 @@ task start(type: JavaExec) {
     description = "Run the main class with JavaExecTask"
     classpath = sourceSets.main.runtimeClasspath
     main = javaMainClass
+}
+
+task startDemoData(type: JavaExec) {
+    group = "Execution"
+    description = "Run the main class with JavaExecTask"
+    classpath = sourceSets.main.runtimeClasspath
+    main = javaSampleDataClass
 }
 
 dependencies {
