@@ -3,7 +3,6 @@ package com.janus.orderbook.execution;
 /**
  * The interface Order.
  */
-// https://github.com/bigfatwhale/orderbook/tree/master/rust/src
 public interface IOrder {
     /**
      * Gets price.
