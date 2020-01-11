@@ -3,6 +3,7 @@ package com.janus.orderbook;
 import com.janus.orderbook.api.Server;
 import com.janus.orderbook.execution.ILimitOrderBook;
 import com.janus.orderbook.execution.LimitOrderBook;
+import com.janus.orderbook.marketFeed.FeedServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +19,7 @@ public class Application implements IApplication {
     private static final Logger LOGGER = LogManager.getLogger(Application.class);
 
     private ILimitOrderBook limitOrderBook;
-    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     private Application() {
         this.start();
@@ -43,6 +44,14 @@ public class Application implements IApplication {
         executorService.submit(() -> {
             try {
                 Server.start(getOrderBook());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        executorService.submit(() -> {
+            try {
+                FeedServer.start(getOrderBook());
             } catch (IOException e) {
                 e.printStackTrace();
             }

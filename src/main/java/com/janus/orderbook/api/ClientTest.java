@@ -1,11 +1,10 @@
 package com.janus.orderbook.api;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class ClientTest {
-    public static void main(String[] args) {
-        //String data = "28815798A6K27GA000031B000500IWM   0000736000Y";
+    public static void main(String[] args) throws InterruptedException {
         SendReceive sr = new SendReceive("localhost", 5056);
-        //String res = sr.send("20200111A6K27GA000031B000500IWM   0000736000Y");
-        // sr.send("28815798A6K27GA000031B000500IWM   0000736000Y");
         String res;
         String msg;
         for (int i = 0; i < 100; i++) {
@@ -22,13 +21,13 @@ public class ClientTest {
             System.out.println(msg);
             res = sr.send(msg);
             System.out.println(res);
+
+            Thread.sleep(400);
         }
-        //System.out.println("Sent: " + data);
-        //System.out.println("Received: " + res);
     }
 
     static int random(int min, int max) {
-        return (int) (Math.random() * max + min);
+        return ThreadLocalRandom.current().nextInt(min, max);
     }
 
     static String genReq(long timestamp, long orderId, char side, long shares, String symbol, long price, char display, String partId) {
