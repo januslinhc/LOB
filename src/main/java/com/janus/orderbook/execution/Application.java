@@ -1,5 +1,8 @@
 package com.janus.orderbook.execution;
 
+/**
+ * The type Application.
+ */
 public class Application implements IApplication {
     private static IApplication instance;
 
@@ -9,6 +12,11 @@ public class Application implements IApplication {
         this.start();
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static IApplication getInstance() {
         if (instance == null) {
             instance = new Application();

@@ -3,6 +3,9 @@ package com.janus.orderbook.execution;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * The type Bid book.
+ */
 public class BidBook extends OrderBook<BidBook> {
     @Override
     public long getBestPrice() {

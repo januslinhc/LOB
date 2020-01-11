@@ -4,19 +4,6 @@ package com.janus.orderbook.msg;
  * The interface Order executed msg.
  */
 public interface IOrderExecutedMsg {
-    /**
-     * Gets timestamp.
-     *
-     * @return the timestamp
-     */
-    long getTimestamp();
-
-    /**
-     * Gets msg type.
-     *
-     * @return the msg type
-     */
-    char getMsgType();
 
     /**
      * Gets order id.

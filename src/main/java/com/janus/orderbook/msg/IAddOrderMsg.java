@@ -4,19 +4,6 @@ package com.janus.orderbook.msg;
  * The interface Add order msg.
  */
 public interface IAddOrderMsg {
-    /**
-     * Gets time stamp.
-     *
-     * @return the time stamp
-     */
-    long getTimeStamp();
-
-    /**
-     * Gets msg type.
-     *
-     * @return the msg type
-     */
-    char getMsgType();
 
     /**
      * Gets order id.

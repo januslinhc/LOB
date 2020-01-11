@@ -1,5 +1,8 @@
 package com.janus.orderbook.msg;
 
+/**
+ * The type Auction update msg.
+ */
 public class AuctionUpdateMsg extends BATSMessage<IAuctionUpdateMsg> implements IAuctionUpdateMsg {
     private long timestamp;
     private char msgType;
@@ -12,7 +15,7 @@ public class AuctionUpdateMsg extends BATSMessage<IAuctionUpdateMsg> implements 
     private long auctionOnlyPrice;
 
     @Override
-    public long getTimestamp() {
+    public long getTimeStamp() {
         return this.timestamp;
     }
 

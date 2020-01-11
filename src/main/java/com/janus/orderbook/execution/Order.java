@@ -1,5 +1,8 @@
 package com.janus.orderbook.execution;
 
+/**
+ * The type Order.
+ */
 public class Order implements IOrder {
     private final long order_id;
     private final long price;
@@ -7,6 +10,15 @@ public class Order implements IOrder {
     private final short side;
     private String part_id;
 
+    /**
+     * Instantiates a new Order.
+     *
+     * @param order_id the order id
+     * @param price    the price
+     * @param volume   the volume
+     * @param side     the side
+     * @param part_id  the part id
+     */
     public Order(long order_id, long price, long volume, short side, String part_id) {
         this.order_id = order_id;
         this.price = price;

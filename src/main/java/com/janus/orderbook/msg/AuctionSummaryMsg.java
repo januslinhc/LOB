@@ -1,5 +1,8 @@
 package com.janus.orderbook.msg;
 
+/**
+ * The type Auction summary msg.
+ */
 public class AuctionSummaryMsg extends BATSMessage<IAuctionSummaryMsg> implements IAuctionSummaryMsg {
     private long timestamp;
     private char msgType;
@@ -8,9 +11,40 @@ public class AuctionSummaryMsg extends BATSMessage<IAuctionSummaryMsg> implement
     private long price;
     private long shares;
 
-    @Override
-    public long getTimestamp() {
-        return this.timestamp;
+    /**
+     * Instantiates a new Auction summary msg.
+     *
+     * @param timestamp   the timestamp
+     * @param msgType     the msg type
+     * @param symbol      the symbol
+     * @param auctionType the auction type
+     * @param price       the price
+     * @param shares      the shares
+     */
+    public AuctionSummaryMsg(long timestamp, char msgType, String symbol, char auctionType, long price, long shares) {
+        this.timestamp = timestamp;
+        this.msgType = msgType;
+        this.symbol = symbol;
+        this.auctionType = auctionType;
+        this.price = price;
+        this.shares = shares;
+    }
+
+    /**
+     * Parse msg auction summary msg.
+     *
+     * @param str the str
+     * @return the auction summary msg
+     */
+    public static IAuctionSummaryMsg parseMsg(String str) {
+        long timestamp = Long.parseLong(str.substring(0, 8));
+        char msgType = str.charAt(8);
+        String symbol = str.substring(9, 17).trim();
+        char auctionType = str.charAt(17);
+        long price = Long.parseLong(str.substring(18, 28));
+        long shares = Long.parseLong(str.substring(28, 38));
+
+        return new AuctionSummaryMsg(timestamp, msgType, symbol, auctionType, price, shares);
     }
 
     @Override
@@ -36,5 +70,10 @@ public class AuctionSummaryMsg extends BATSMessage<IAuctionSummaryMsg> implement
     @Override
     public long getShares() {
         return this.shares;
+    }
+
+    @Override
+    public long getTimeStamp() {
+        return this.timestamp;
     }
 }

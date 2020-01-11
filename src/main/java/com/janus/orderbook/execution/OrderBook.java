@@ -6,10 +6,21 @@ import org.apache.logging.log4j.Logger;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+/**
+ * The type Order book.
+ *
+ * @param <K> the type parameter
+ */
 public abstract class OrderBook<K> implements IOrderBook {
+    /**
+     * The Price buckets.
+     */
     protected NavigableMap<Long, IPriceBucket> price_buckets;
     private static final Logger LOGGER = LogManager.getLogger(OrderBook.class);
 
+    /**
+     * Instantiates a new Order book.
+     */
     public OrderBook() {
         this.price_buckets = new TreeMap<>();
     }

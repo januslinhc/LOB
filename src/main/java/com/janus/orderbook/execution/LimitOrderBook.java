@@ -9,6 +9,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The type Limit order book.
+ */
 public class LimitOrderBook implements ILimitOrderBook {
     private volatile IOrderBook askBook;
     private volatile IOrderBook bidBook;
@@ -17,6 +20,9 @@ public class LimitOrderBook implements ILimitOrderBook {
     private final ExecutorService executorService;
     private static final Logger LOGGER = LogManager.getLogger(LimitOrderBook.class);
 
+    /**
+     * Instantiates a new Limit order book.
+     */
     public LimitOrderBook() {
         this.askBook = new AskBook();
         this.bidBook = new BidBook();
@@ -26,17 +32,47 @@ public class LimitOrderBook implements ILimitOrderBook {
         //this.start_workers();
     }
 
-    @Override
-        public void addOrder(IOrder order) {
-        // -1 is ask / buy
-        // 0 is bid / sell
-        if (order.getSide() == -1) {
-            this.checkAndDoCrossSpreadWwalk(order, this.askBook, this.bidBook, (x, y) -> x <= y);
-            //this.askRequests.add(order);
-        } else {
-            this.checkAndDoCrossSpreadWwalk(order, this.bidBook, this.askBook, (x, y) -> x >= y);
-            //this.bidRequests.add(order);
+    /**
+     * Cross spread walk pair.
+     *
+     * @param order the order
+     * @param book  the book
+     * @param func  the func
+     * @return the pair
+     */
+    static Pair<Long, List<IOrder>> crossSpreadWalk(IOrder order, IOrderBook book, check_and_do_cross_spread_walk_fun func) {
+        long volume = order.getVolume();
+        List<IOrder> orders_to_remove = new ArrayList<>();
+
+        Iterator<Map.Entry<Long, IPriceBucket>> iterator = book.getIterMut();
+        Map.Entry<Long, IPriceBucket> obj;
+        IOrder objIterOrder;
+        Iterator<IOrder> objIter;
+        while (iterator.hasNext()) {
+            obj = iterator.next();
+            objIter = obj.getValue().getOrdersIter();
+
+            while (objIter.hasNext()) {
+                objIterOrder = objIter.next();
+                if (!(volume > 0 && func.run(order.getPrice(), objIterOrder.getPrice()))) {
+                    break;
+                }
+
+                if (volume >= objIterOrder.getVolume()) {
+                    volume -= objIterOrder.getVolume();
+                    LOGGER.debug(String.format("taking %s from order id %s, left %s", objIterOrder.getVolume(), objIterOrder.getOrderID(), volume));
+                    objIterOrder.setVolume(0);
+
+                    orders_to_remove.add(objIterOrder);
+                } else {
+                    objIterOrder.setVolume(objIterOrder.getVolume() - volume);
+                    volume = 0;
+                    LOGGER.debug(String.format("taking %s from order id %s, left %s", objIterOrder.getVolume(), objIterOrder.getOrderID(), volume));
+                }
+            }
         }
+
+        return new Pair(volume, orders_to_remove);
     }
 
     @Override
@@ -116,8 +152,17 @@ public class LimitOrderBook implements ILimitOrderBook {
         this.executorService.shutdown();
     }
 
-    interface check_and_do_cross_spread_walk_fun {
-        boolean run(long a, long b);
+    @Override
+    public void addOrder(IOrder order) {
+        // -1 is ask / buy
+        // 0 is bid / sell
+        if (order.getSide() == -1) {
+            this.checkAndDoCrossSpreadWwalk(order, this.askBook, this.bidBook, (x, y) -> x <= y);
+            //this.askRequests.add(order);
+        } else {
+            this.checkAndDoCrossSpreadWwalk(order, this.bidBook, this.askBook, (x, y) -> x >= y);
+            //this.bidRequests.add(order);
+        }
     }
 
     private void checkAndDoCrossSpreadWwalk(IOrder order, IOrderBook book, IOrderBook opp_book, check_and_do_cross_spread_walk_fun func) {
@@ -136,46 +181,35 @@ public class LimitOrderBook implements ILimitOrderBook {
         }
     }
 
-    static Pair<Long, List<IOrder>> crossSpreadWalk(IOrder order, IOrderBook book, check_and_do_cross_spread_walk_fun func) {
-        long volume = order.getVolume();
-        List<IOrder> orders_to_remove = new ArrayList<>();
-
-        Iterator<Map.Entry<Long, IPriceBucket>> iterator = book.getIterMut();
-        Map.Entry<Long, IPriceBucket> obj;
-        IOrder objIterOrder;
-        Iterator<IOrder> objIter;
-        while (iterator.hasNext()) {
-            obj = iterator.next();
-            objIter = obj.getValue().getOrdersIter();
-
-            while (objIter.hasNext()) {
-                objIterOrder = objIter.next();
-                if (!(volume > 0 && func.run(order.getPrice(), objIterOrder.getPrice()))) {
-                    break;
-                }
-
-                if (volume >= objIterOrder.getVolume()) {
-                    volume -= objIterOrder.getVolume();
-                    LOGGER.debug(String.format("taking %s from order id %s, left %s", objIterOrder.getVolume(), objIterOrder.getOrderID(), volume));
-                    objIterOrder.setVolume(0);
-
-                    orders_to_remove.add(objIterOrder);
-                } else {
-                    objIterOrder.setVolume(objIterOrder.getVolume() - volume);
-                    volume = 0;
-                    LOGGER.debug(String.format("taking %s from order id %s, left %s", objIterOrder.getVolume(), objIterOrder.getOrderID(), volume));
-                }
-            }
-        }
-
-        return new Pair(volume, orders_to_remove);
-    }
-
+    /**
+     * Ask iter set.
+     *
+     * @return the set
+     */
     public Set<Map.Entry<Long, IPriceBucket>> ask_iter() {
         return this.askBook.getPriceBuckets().entrySet();
     }
 
+    /**
+     * Bid iter set.
+     *
+     * @return the set
+     */
     public Set<Map.Entry<Long, IPriceBucket>> bid_iter() {
         return this.bidBook.getPriceBuckets().entrySet();
+    }
+
+    /**
+     * The interface Check and do cross spread walk fun.
+     */
+    interface check_and_do_cross_spread_walk_fun {
+        /**
+         * Run boolean.
+         *
+         * @param a the a
+         * @param b the b
+         * @return the boolean
+         */
+        boolean run(long a, long b);
     }
 }

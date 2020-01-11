@@ -4,19 +4,6 @@ package com.janus.orderbook.msg;
  * The interface Trade msg.
  */
 public interface ITradeMsg {
-    /**
-     * Gets timestamp.
-     *
-     * @return the timestamp
-     */
-    long getTimestamp();
-
-    /**
-     * Gets msg type.
-     *
-     * @return the msg type
-     */
-    char getMsgType();
 
     /**
      * Gets order id.
