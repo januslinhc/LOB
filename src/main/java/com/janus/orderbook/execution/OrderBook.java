@@ -1,15 +1,24 @@
-package com.janus.orderbook;
+package com.janus.orderbook.execution;
 
-import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public abstract class OrderBook<K> implements IOrderBook {
     protected NavigableMap<Long, IPriceBucket> price_buckets;
+    private static final Logger LOGGER = LogManager.getLogger(OrderBook.class);
 
-    public long volume_at_price_level(long price) {
+    public OrderBook() {
+        this.price_buckets = new TreeMap<>();
+    }
+
+    @Override
+    public long getVolumeAtPriceLevel(long price) {
         IPriceBucket priceBucket = this.price_buckets.get(price);
         if (priceBucket != null) {
-            return priceBucket.volume();
+            return priceBucket.getVolume();
         }
         return 0;
     }
@@ -28,7 +37,13 @@ public abstract class OrderBook<K> implements IOrderBook {
 
     @Override
     public void removeOrder(IOrder order) {
-        this.price_buckets.remove(order);
+        IPriceBucket priceBucket = this.price_buckets.get(order.getPrice());
+        LOGGER.debug(String.format("deleting request %s", order));
+
+        if (priceBucket != null) {
+            priceBucket.removeOrder(order);
+            LOGGER.info(String.format("complete request %s", order));
+        }
     }
 
     @Override

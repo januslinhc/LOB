@@ -1,4 +1,4 @@
-package com.janus.orderbook;
+package com.janus.orderbook.execution;
 
 // https://github.com/bigfatwhale/orderbook/tree/master/rust/src
 public interface IOrder {
@@ -7,4 +7,8 @@ public interface IOrder {
     short getSide();
 
     long getVolume();
+
+    void setVolume(long volume);
+
+    long getOrderID();
 }
