@@ -1,7 +1,5 @@
 package com.janus.orderbook;
 
-import com.janus.orderbook.execution.Application;
-import com.janus.orderbook.execution.IApplication;
 import com.janus.orderbook.execution.Order;
 
 public class Main {
@@ -11,7 +9,8 @@ public class Main {
     public static void main(String[] args) {
         IApplication app = Application.getInstance();
         app.getOrderBook().addRequest(new Order(1, 30, 100, (short) 0, null));
-        app.getOrderBook().addRequest(new Order(2, 20, 100, (short) -1, null));
+        app.getOrderBook().addRequest(new Order(1, 40, 100, (short) 0, null));
+        app.getOrderBook().addRequest(new Order(2, 20, 200, (short) -1, null));
         //  app.getOrderBook().addRequest(new Order(3, 5, 50, (short) 0, null));
         // app.getOrderBook().addRequest(new Order(4, 10, 50, (short) 0, null));
 

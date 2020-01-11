@@ -11,8 +11,8 @@ class TradeMsgTest {
         String msg = "28946142P9K27G60000SYB000400PTR   0001430000000I000HV2OK";
         ITradeMsg tradeMsg = TradeMsg.parseMsg(msg);
 
-        assertEquals(Long.parseLong("28946142"), tradeMsg.getTimestamp());
-        assertEquals('P', tradeMsg.getMsgType());
+        assertEquals(Long.parseLong("28946142"), ((IBATSMessage)tradeMsg).getTimeStamp());
+        assertEquals('P', ((IBATSMessage)tradeMsg).getMsgType());
         assertEquals(Long.parseLong("9K27G60000SY", 36), tradeMsg.getOrderId());
         assertEquals('B', tradeMsg.getSide());
         assertEquals(Long.parseLong("000400"), tradeMsg.getShares());
